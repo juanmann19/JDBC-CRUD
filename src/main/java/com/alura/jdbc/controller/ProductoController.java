@@ -17,17 +17,29 @@ import java.util.HashMap;
 
 public class ProductoController {
 
-	public void modificar(String nombre, String descripcion, Integer id) {
+	public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
 		// TODO
+		Connection con = ConnectionFactory.recuperaConexion();
+		Statement statement = con.createStatement();
+		statement.execute("UPDATE PRODUCTO SET "
+	            + " NOMBRE = '" + nombre + "'"
+	            + ", DESCRIPCION = '" + descripcion + "'"
+	            + ", CANTIDAD = " + cantidad
+	            + " WHERE ID = " + id);
+		int updatecount = statement.getUpdateCount();
+		con.close();
+		return updatecount;
 	}
-
+		
 	public int eliminar(Integer id) throws SQLException {
 		// TODO
 		Connection con = ConnectionFactory.recuperaConexion(); 
 		Statement statement = con.createStatement();
 		statement.execute("DELETE FROM PRODUCTO WHERE id = " + id);
 		int updatecount = statement.getUpdateCount();
+		con.close();
 		return updatecount;
+		
 	}
 
 	public List<Map<String, String>> listar() throws SQLException {
