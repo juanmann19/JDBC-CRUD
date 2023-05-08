@@ -17,7 +17,7 @@ public class ConnectionFactory {
 		pooledDataSource.setPassword (config.pw);
 		datasource = pooledDataSource;
 		return datasource.getConnection();
-		//EnvConfig config = new EnvConfig();
+//		EnvConfig config = new EnvConfig();
 //		return DriverManager.getConnection(
 //				config.url,
 //				config.user,

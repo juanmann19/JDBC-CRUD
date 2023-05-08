@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.alura.jdbc.factory.ConnectionFactory;
+import com.alura.jdbc.modelo.Producto;
 
 import java.util.List;
 import java.util.HashMap;
@@ -72,25 +73,17 @@ public class ProductoController {
 		return resultado;
 	}
 
-    public void guardar(Map<String, String> producto) throws SQLException {
+    public void guardar(Producto producto) throws SQLException {
 		// TODO
 		Connection con = ConnectionFactory.recuperaConexion();	
 		con.setAutoCommit(false);
-		String nombre = producto.get("NOMBRE"); 
-		String descripcion = producto.get("DESCRIPCION");
-		Integer cantidad = Integer.valueOf(producto.get("CANTIDAD"));
-		Integer maximoCantidad = 50;
+
 		
 		PreparedStatement statement = con.prepareStatement("INSERT INTO PRODUCTO "
 				+ "(nombre, descripcion, cantidad) "
 				+ "VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
 		try {
-			do {
-				int cantidadParaGuardar = Math.min(cantidad, maximoCantidad);
-				ejecutaRegistro(nombre, descripcion, cantidadParaGuardar, statement);
-				cantidad-=maximoCantidad;
-				
-			}while(cantidad > 0);
+			ejecutaRegistro(producto, statement);
 			con.commit();
 		}catch(Exception e) {
 			con.rollback();
@@ -99,16 +92,17 @@ public class ProductoController {
 		statement.close();
 	}
 
-	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
+	private void ejecutaRegistro(Producto producto, PreparedStatement statement)
 			throws SQLException {
-		statement.setString(1, nombre);
-		statement.setString(2, descripcion);
-		statement.setInt(3, cantidad);
+		statement.setString(1, producto.getNombre());
+		statement.setString(2, producto.getDescripcion());
+		statement.setInt(3, producto.getCantidad());
 		statement.execute();
 		ResultSet result = statement.getGeneratedKeys();
 		while(result.next()) {
+			producto.setId(result.getInt(1));
 			System.out.println(
-					String.format("El ID del valor insertado fue %d", result.getInt(1))
+					producto.toString()
 					);
 		}
 	}
