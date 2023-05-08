@@ -10,13 +10,19 @@ public class ConnectionFactory {
 	private static DataSource datasource;
 
 	
-	public static Connection recuperaConexion() throws SQLException {
-		var pooledDataSource = new ComboPooledDataSource();
-		pooledDataSource.setJdbcUrl(config.url);
-		pooledDataSource.setUser(config.user);
-		pooledDataSource.setPassword (config.pw);
-		datasource = pooledDataSource;
-		return datasource.getConnection();
+	public static Connection recuperaConexion(){
+		
+		try {
+			var pooledDataSource = new ComboPooledDataSource();
+			pooledDataSource.setJdbcUrl(config.url);
+			pooledDataSource.setUser(config.user);
+			pooledDataSource.setPassword (config.pw);
+			datasource = pooledDataSource;
+			return datasource.getConnection();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
 //		EnvConfig config = new EnvConfig();
 //		return DriverManager.getConnection(
 //				config.url,
